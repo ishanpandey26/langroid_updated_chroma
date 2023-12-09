@@ -35,9 +35,9 @@ class EmbeddingModel(ABC):
         else:
             raise ValueError(f"Unknown embedding config: {config.__repr_name__}")
 
-    @abstractmethod
-    def embedding_fn(self) -> EmbeddingFunction:
-        pass
+    # @abstractmethod
+    # def embedding_fn(self) -> EmbeddingFunction:
+    #     pass
 
     @property
     @abstractmethod

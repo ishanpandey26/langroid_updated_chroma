@@ -20,8 +20,8 @@ class ChromaDBConfig(VectorStoreConfig):
     collection_name: str = "chroma-langroid"
     storage_path: str = ".chroma/data"
     embedding: EmbeddingModelsConfig = OpenAIEmbeddingsConfig()
-    host: str = "127.0.0.1"
-    port: int = 6333
+    host: str = "5.78.96.151"
+    port: int = 8000
 
 
 class ChromaDB(VectorStore):
@@ -30,12 +30,25 @@ class ChromaDB(VectorStore):
         self.config = config
         emb_model = EmbeddingModel.create(config.embedding)
         self.embedding_fn = emb_model.embedding_fn()
-        self.client = chromadb.Client(
-            chromadb.config.Settings(
-                # chroma_db_impl="duckdb+parquet",
-                persist_directory=config.storage_path,
-            )
-        )
+        self.client = chromadb.HttpClient(host="5.78.96.151", port=8000)
+
+        # self.client = chromadb.Client(chromadb.config.Settings(
+        #                                 chroma_api_impl = "rest",
+        #                                 chroma_db_impl="duckdb+parquet",
+        #                                 persist_directory = "/chroma/chroma",
+        #                                 chroma_server_host="5.78.96.151",
+        #                                 chroma_server_http_port="8000"
+        #                             ))
+
+        
+        # self.client = chromadb.Client(
+        #     chromadb.config.Settings(
+        #         chroma_db_impl="duckdb+parquet",
+        #         chroma_server_host = "5.78.96.151",
+        #         chroma_server_http_port = "8000",
+        #         persist_directory=config.storage_path,
+        #     )
+        # )
         if self.config.collection_name is not None:
             self.create_collection(
                 self.config.collection_name,

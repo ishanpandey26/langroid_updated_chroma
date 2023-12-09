@@ -53,9 +53,16 @@ class OpenAIEmbeddings(EmbeddingModel):
         return self.config.dims
 
 
+class EmbeddingFunction:
+    def __init__(self, model):
+        self.model = model
+
+    def __call__(self, input: List[str]) -> Embeddings:
+        return self.model.encode(input, convert_to_numpy=True).tolist()
+
 class SentenceTransformerEmbeddings(EmbeddingModel):
     def __init__(self, config: SentenceTransformerEmbeddingsConfig):
-        # this is an "extra" optional dependency, so we import it here
+        # Import and error handling
         try:
             from sentence_transformers import SentenceTransformer
         except ImportError:
@@ -72,12 +79,7 @@ class SentenceTransformerEmbeddings(EmbeddingModel):
         self.model = SentenceTransformer(self.config.model_name)
 
     def embedding_fn(self) -> Callable[[List[str]], Embeddings]:
-        def fn(texts: List[str]) -> Embeddings:
-            return self.model.encode(  # type: ignore
-                texts, convert_to_numpy=True
-            ).tolist()
-
-        return fn
+        return EmbeddingFunction(self.model)
 
     @property
     def embedding_dims(self) -> int:
@@ -86,7 +88,8 @@ class SentenceTransformerEmbeddings(EmbeddingModel):
             raise ValueError(
                 f"Could not get embedding dimension for model {self.config.model_name}"
             )
-        return dims  # type: ignore
+        return dims
+
 
 
 def embedding_model(embedding_fn_type: str = "openai") -> EmbeddingModel:
