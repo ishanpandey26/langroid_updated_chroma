@@ -23,7 +23,7 @@ def retry_with_exponential_backoff(
     max_retries: int = 10,
     errors: tuple = (  # type: ignore
         requests.exceptions.RequestException,
-        openai.APITimeoutError,
+        # openai.APITimeoutError,
         openai.RateLimitError,
         openai.APIError,
         aiohttp.ServerTimeoutError,

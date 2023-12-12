@@ -30,8 +30,8 @@ class ChromaDB(VectorStore):
         self.config = config
         emb_model = EmbeddingModel.create(config.embedding)
         self.embedding_fn = emb_model.embedding_fn()
-        self.client = chromadb.HttpClient(host="5.78.96.151", port=8000)
-
+        # self.client = chromadb.HttpClient(host="5.78.96.151", port=8000)
+        self.client = chromadb.PersistentClient()
         # self.client = chromadb.Client(chromadb.config.Settings(
         #                                 chroma_api_impl = "rest",
         #                                 chroma_db_impl="duckdb+parquet",
